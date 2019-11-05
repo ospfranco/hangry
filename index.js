@@ -19,6 +19,7 @@ bot.on("message", function(msg) {
   switch (msg.type) {
     case "message": {
       if (msg.channel[0] === "D" && msg.bot_id === undefined) {
+        console.log("received message", msg);
         nodeScreenshot.fromURL(
           "https://www.cobie.de/speisekarte",
           "cobie-speise-karte.png",
@@ -35,33 +36,6 @@ bot.on("message", function(msg) {
             show: false
           },
           function() {
-            //   const formData = new FormData();
-            //   formData.append(
-            //     "file",
-            //     fs.createReadStream("cobie-speise-karte.png"),
-            //     "cobie"
-            //   );
-            //   formData.append("token", token);
-            //   formData.append("channels", msg.user);
-
-            //   fetch("https://slack.com/api/files.upload", {
-            //     method: "POST",
-            //     headers: {
-            //       "Content-Type": "multipart/form-data",
-            //       Authorization: `Bearer ${token}`
-            //     },
-            //     body: formData
-            //   })
-            //     .then(res => {
-            //       console.log("res", res);
-            //       res.json().then(json => {
-            //         console.log("upload json", json);
-            //       });
-            //       // console.warn("uploaded", res);
-            //     })
-            //     .catch(e => {
-            //       console.warn("fetch error", e);
-            //     });
             uploadFile({ channels: [msg.user] });
           }
         );
