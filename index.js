@@ -41,7 +41,7 @@ bot.on("message", function(msg) {
           attachments: [
             {
               fallback: "Hamberger menu",
-              text: "Cobie Menu",
+              text: "Cobie Menu (running on heroku)",
               image_url:
                 "https://upload.wikimedia.org/wikipedia/commons/4/41/Thetford_Warren_Lodge_-_geograph.org.uk_-_2377164.jpg",
               thumb_url:
