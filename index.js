@@ -35,8 +35,19 @@ bot.on("message", function(msg) {
             },
             show: false
           },
-          function() {
-            uploadFile({ channels: [msg.user] });
+          function(err) {
+            if (err) {
+              console.log("error creating screenshot", err);
+            } else {
+              console.log("uploading file");
+              uploadFile({ channels: [msg.user] })
+                .then(res => {
+                  console.log("file was uploaded", res);
+                })
+                .catch(e => {
+                  console.log("file upload failed", e);
+                });
+            }
           }
         );
 
