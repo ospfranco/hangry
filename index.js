@@ -1,8 +1,10 @@
 const Slackbot = require("slackbots");
 const nodeScreenshot = require("node-server-screenshot");
 
+const token = process.env.SLACK_TOKEN;
+
 const bot = new Slackbot({
-  token: "xoxb-2489948426-814714724753-tLHVPWcfHxdnyWG5i1Nkec6C",
+  token,
   name: "hangry"
 });
 
