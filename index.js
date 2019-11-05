@@ -35,7 +35,8 @@ bot.on("message", function(msg) {
             shotOffset: {
               left: 0,
               top: 6200
-            }
+            },
+            phantomPath: path.join(__dirname, "vendor/phantomjs/bin/phantomjs")
           },
           function(err) {
             uploadFile({ channels: [msg.user] });
