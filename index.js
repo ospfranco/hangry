@@ -1,7 +1,7 @@
 const Slackbot = require("slackbots");
-const nodeScreenshot = require("node-server-screenshot");
+var webshot = require("webshot");
+
 const fs = require("fs");
-const FormData = require("form-data");
 const request = require("request");
 
 const token = process.env.SLACK_TOKEN;
@@ -20,36 +20,58 @@ bot.on("message", function(msg) {
     case "message": {
       if (msg.channel[0] === "D" && msg.bot_id === undefined) {
         console.log("received message", msg);
-        nodeScreenshot.fromURL(
+        webshot(
           "https://www.cobie.de/speisekarte",
           "cobie-speise-karte.png",
           {
-            waitMilliseconds: 2000,
-            height: 8000,
-            width: 1280,
-            clip: {
-              x: 0,
-              y: 6200,
-              width: 1280,
-              height: 1000
+            windowSize: {
+              height: 8000,
+              width: 1280
             },
-            show: false
+            shotSize: {
+              height: 1000,
+              width: 1280
+            },
+            shotOffset: {
+              left: 0,
+              top: 6200
+            }
           },
           function(err) {
-            if (err) {
-              console.log("error creating screenshot", err);
-            } else {
-              console.log("uploading file");
-              uploadFile({ channels: [msg.user] })
-                .then(res => {
-                  console.log("file was uploaded", res);
-                })
-                .catch(e => {
-                  console.log("file upload failed", e);
-                });
-            }
+            uploadFile({ channels: [msg.user] });
           }
         );
+
+        // nodeScreenshot.fromURL(
+        //   "https://www.cobie.de/speisekarte",
+        //   "cobie-speise-karte.png",
+        //   {
+        //     waitMilliseconds: 2000,
+        //     height: 8000,
+        //     width: 1280,
+        //     clip: {
+        //       x: 0,
+        //       y: 6200,
+        //       width: 1280,
+        //       height: 1000
+        //     },
+        //     show: false
+        //   },
+        //   function(err) {
+        //     if (err) {
+        //       console.log("error creating screenshot", err);
+        //     } else {
+        //       console.log("uploading file");
+        //       uploadFile({ channels: [msg.user] })
+        //         .then(res => {
+        //           console.log("file was uploaded", res);
+        //         })
+        //         .catch(e => {
+        //           console.log("file upload failed", e);
+        //         });
+        //     }
+        //   }
+        // );
 
         // bot.postMessage(msg.user, "Here is the hamberger menu", {
         //   as_user: true,
