@@ -1,6 +1,6 @@
 const Slackbot = require("slackbots");
 var webshot = require("webshot");
-
+const path = require("path");
 const fs = require("fs");
 const request = require("request");
 
