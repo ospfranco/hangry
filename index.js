@@ -2,7 +2,7 @@ const Slackbot = require("slackbots");
 const nodeScreenshot = require("node-server-screenshot");
 const fs = require("fs");
 const FormData = require("form-data");
-const fetch = require("node-fetch");
+const request = require("request");
 
 const token = process.env.SLACK_TOKEN;
 
@@ -11,9 +11,9 @@ const bot = new Slackbot({
   name: "hangry"
 });
 
-bot.on("start", function() {
-  bot.postMessageToChannel("general", "meow");
-});
+// bot.on("start", function() {
+//   bot.postMessageToChannel("general", "meow");
+// });
 
 bot.on("message", function(msg) {
   switch (msg.type) {
@@ -35,26 +35,34 @@ bot.on("message", function(msg) {
             show: false
           },
           function() {
-            const formData = new FormData();
-            formData.append(
-              "file",
-              fs.createReadStream("./cobie-speise-karte.png"),
-              "cobie"
-            );
-            formData.append("token", token);
-            formData.append("channels", msg.user);
+            //   const formData = new FormData();
+            //   formData.append(
+            //     "file",
+            //     fs.createReadStream("cobie-speise-karte.png"),
+            //     "cobie"
+            //   );
+            //   formData.append("token", token);
+            //   formData.append("channels", msg.user);
 
-            fetch("https://slack.com/api/files.upload", {
-              method: "POST",
-              headers: { "Content-Type": "multipart/form-data" },
-              body: formData
-            })
-              .then(res => {
-                console.warn("uploaded", res);
-              })
-              .catch(e => {
-                console.warn("fetch error", e);
-              });
+            //   fetch("https://slack.com/api/files.upload", {
+            //     method: "POST",
+            //     headers: {
+            //       "Content-Type": "multipart/form-data",
+            //       Authorization: `Bearer ${token}`
+            //     },
+            //     body: formData
+            //   })
+            //     .then(res => {
+            //       console.log("res", res);
+            //       res.json().then(json => {
+            //         console.log("upload json", json);
+            //       });
+            //       // console.warn("uploaded", res);
+            //     })
+            //     .catch(e => {
+            //       console.warn("fetch error", e);
+            //     });
+            uploadFile({ channels: [msg.user] });
           }
         );
 
@@ -79,3 +87,41 @@ bot.on("message", function(msg) {
       break;
   }
 });
+
+const uploadFile = options =>
+  new Promise((resolve, reject) => {
+    const { channels } = options;
+
+    const payload = {
+      token,
+      file: fs.createReadStream("./cobie-speise-karte.png"),
+      channels,
+      filetype: "image/png",
+      filename: "file",
+      title: "file"
+    };
+
+    request.post(
+      {
+        url: "https://slack.com/api/files.upload",
+        formData: payload,
+        json: true
+      },
+      (err, response, body) => {
+        if (err) {
+          reject(err);
+        } else if (response.statusCode !== 200) {
+          reject(body);
+        } else if (body.ok !== true) {
+          const bodyString = JSON.stringify(body);
+          reject(
+            new Error(
+              `Got non ok response while uploading file -> ${bodyString}`
+            )
+          );
+        } else {
+          resolve(body);
+        }
+      }
+    );
+  });
